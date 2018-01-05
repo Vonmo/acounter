@@ -1,0 +1,20 @@
+{application, acounter,
+ [{description, "Atomic Counter OTP application"},
+  {vsn, git},
+  {registered, []},
+  {mod, { acounter_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    inets,
+    sasl,
+    metrix
+   ]},
+  {env,[
+  ]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.

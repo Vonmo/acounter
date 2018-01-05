@@ -1,0 +1,15 @@
+version: '3.2'
+services:
+
+  base:
+    build: imgs/base
+
+  test:
+    image: acounter_base:latest
+    depends_on:
+      - base
+    volumes:
+      - "./:/project"
+    tmpfs:
+      - /run
+      - /tmp

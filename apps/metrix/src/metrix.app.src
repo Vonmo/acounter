@@ -1,0 +1,24 @@
+{application, metrix,
+ [{description, "Metrix OTP application"},
+  {vsn, git},
+  {registered, []},
+  {mod, { metrix_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    inets,
+    sasl
+   ]},
+  {env,[
+    {result_path, "metrix/"},
+    {refresh_timeout_ms, 20000},
+
+    {cluster_name, dev},
+    {project_id, dev}
+  ]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.

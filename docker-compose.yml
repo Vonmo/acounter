@@ -9,7 +9,7 @@ services:
     depends_on:
       - base
     volumes:
-      - "./:/project"
+      - "./:/project:Z"
     tmpfs:
       - /run
       - /tmp

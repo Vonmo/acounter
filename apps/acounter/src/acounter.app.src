@@ -8,9 +8,23 @@
     stdlib,
     inets,
     sasl,
-    metrix
+    metrix,
+    ranch,
+    cowboy
    ]},
   {env,[
+    {socket, #{
+      port => 18085
+    }},
+    {dispatch, [
+      {'_', [
+          {"/api/increase/:id", counter_handler, [{m, increase}]},
+          {"/api/decrease/:id", counter_handler, [{m, decrease}]},
+          {"/api/reset/:id", counter_handler, [{m, reset}]},
+          {"/api/get/:id", counter_handler, [{m, get}]},
+          {'_', index_handler, []}
+      ]}
+    ]}
   ]},
   {modules, []},
 

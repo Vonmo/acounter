@@ -38,6 +38,7 @@ start_link() ->
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
     {ok, { {one_for_one, 1000, 10}, lists:flatten([
+        ?CHILD(counters_storage, worker)
     ])} }.
 
 %%====================================================================

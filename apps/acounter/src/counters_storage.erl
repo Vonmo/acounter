@@ -13,6 +13,11 @@
          terminate/2,
          code_change/3]).
 
+-export([increase/1,
+         decrease/1,
+         reset/1,
+         get/1]).
+
 -include_lib("eunit/include/eunit.hrl").
 
 %% defines
@@ -35,6 +40,21 @@ start_link() ->
 start_link(Args) ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, Args, []).
 
+increase(Id)->
+    ets:update_counter(?TABLE_NAME, Id, {2, 1}, {Id, 0}).
+
+decrease(Id)->
+    ets:update_counter(?TABLE_NAME, Id, {2, -1}, {Id, 0}).
+
+reset(Id)->
+    ets:delete(?TABLE_NAME, Id).
+
+get(Id)->
+    case ets:lookup(?TABLE_NAME, Id) of
+        [{Id, Cur}|_] -> Cur;
+        _Else -> 0
+    end.
+
 %%%===================================================================
 %%% gen_server callbacks
 %%%===================================================================
@@ -52,13 +72,11 @@ start_link(Args) ->
 %%--------------------------------------------------------------------
 init(_Args) ->
     process_flag(trap_exit, true),
-    catch ets:file2tab(dump_filename(), ?TABLE_NAME),
-    {ok, #{
-        tab => ets:new(?TABLE_NAME,
-                        [set, named_table, public,
-                         {write_concurrency, true},
-                         {read_concurrency, true}])
-    }}.
+    Tab = ets:new(?TABLE_NAME, [set, named_table, public,
+                                {write_concurrency, true},
+                                {read_concurrency, true}]),
+    ets:file2tab(dump_filename()),
+    {ok, #{tab => Tab}}.
 
 %%--------------------------------------------------------------------
 %% @private

@@ -6,9 +6,6 @@
 %% includes
 -include_lib("eunit/include/eunit.hrl").
 
--define(TABLE_NAME, counters_storage).
-
-
 init(Req, State) ->
     Method = proplists:get_value(m, State, undef),
     {Status, Body, Req1, State1} = handle(Method, Req, State),
@@ -23,25 +20,21 @@ terminate(_Reason, _Req, _State) -> ok.
 
 handle(increase, Req, State) ->
     Id = cowboy_req:binding(id, Req, unknown),
-    ets:update_counter(?TABLE_NAME, Id, {2, 1}, {Id, 0}),
+    counters_storage:increase(Id),
     {200, #{code => 200}, Req, State};
 
 handle(decrease, Req, State) ->
     Id = cowboy_req:binding(id, Req, unknown),
-    ets:update_counter(?TABLE_NAME, Id, {2, -1}, {Id, 0}),
+    counters_storage:decrease(Id),
     {200, #{code => 200}, Req, State};
 
 handle(get, Req, State) ->
     Id = cowboy_req:binding(id, Req, unknown),
-    Val = case ets:lookup(?TABLE_NAME, Id) of
-        [{Id, Cur}|_] -> Cur;
-        _Else -> 0
-    end,
-    {200, #{code => 200, value => Val}, Req, State};
+    {200, #{code => 200, value => counters_storage:get(Id)}, Req, State};
 
 handle(reset, Req, State) ->
     Id = cowboy_req:binding(id, Req, unknown),
-    ets:delete(?TABLE_NAME, Id),
+    counters_storage:reset(Id),
     {200, #{code => 200}, Req, State};
 
 handle(UnknownMethod, Req, State) ->
